@@ -28,24 +28,29 @@ nnoremap <F5> :GundoToggle<CR>
 
 call plug#begin('~/.vim/plugged')
 " Plugin definitions go here
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'fatih/molokai'
 Plug 'davidhalter/jedi-vim'
 Plug 'prabirshrestha/vim-lsp'
 Plug 'puremourning/vimspector'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'preservim/nerdtree'
-Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --tern-completer' }
 Plug 'tpope/vim-fugitive'
-Plug 'junegunn/seoul256.vim'
+" Plug 'junegunn/seoul256.vim'
 " cp to system clipboard, cv to vim clipboard
 Plug 'christoomey/vim-system-copy'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
 
-colo seoul256
+" colo seoul256
+
+let g:rehash256=1
+let g:molokai_original=1
+colo molokai
 let g:system_copy#copy_command='xclip -sel clipboard'
 let g:system_copy#paste_command='xclip -sel clipboard -o'
 let g:lsp_semantic_enabled=1
-let g:ycm_auto_trigger=1 
 if executable('pylsp')
         " pip install python-lsp-server
         au User lsp_setup call lsp#register_server({
@@ -91,14 +96,20 @@ nmap <C-n> :NERDTreeToggle<CR>
 " Start NERDTree and leave the cursor in it.
 " autocmd VimEnter * NERDTree
 
+"for vim-go
+" Navigation commands
+au FileType go nmap <Leader>ds <Plug>(go-def-split)
+au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
 
-" You complete me
-function! BuildYCM(info)
-        " info is a dictionary with 3 fields
-        " - name:   name of the plugin
-        " - status: 'installed', 'updated', or 'unchanged'
-        " - force:  set on PlugInstall! or PlugUpdate!
-        if a:info.status == 'installed' || a:info.force
-                !./install.py
-        endif
-endfunction
+" Use new vim 8.2 popup windows for Go Doc
+let g:go_doc_popup_window = 1
+let g:go_highlight_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_function_calls = 1
+let g:go_auto_sameids = 1
+
+" when you want to show where this function is being used, then use
+" :GoReferrers, and then you can navigate through the list with ctrl + w
+nnoremap <leader>a :cclose<CR>
+
+autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
