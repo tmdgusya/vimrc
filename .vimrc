@@ -51,48 +51,36 @@ colo molokai
 let g:system_copy#copy_command='xclip -sel clipboard'
 let g:system_copy#paste_command='xclip -sel clipboard -o'
 let g:lsp_semantic_enabled=1
-if executable('pylsp')
-        " pip install python-lsp-server
-        au User lsp_setup call lsp#register_server({
-                                \ 'name': 'pylsp',
-                                \ 'cmd': {server_info->['pylsp']},
-                                \ 'allowlist': ['python'],
-                                \ })
-endif
-
-function! s:on_lsp_buffer_enabled() abort
-        setlocal omnifunc=lsp#complete
-        setlocal signcolumn=yes
-        if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-        nmap <buffer> gd <plug>(lsp-definition)
-        nmap <buffer> gs <plug>(lsp-document-symbol-search)
-        nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
-        nmap <buffer> gr <plug>(lsp-references)
-        nmap <buffer> gi <plug>(lsp-implementation)
-        nmap <buffer> gt <plug>(lsp-type-definition)
-        nmap <buffer> <leader>rn <plug>(lsp-rename)
-        nmap <buffer> [g <plug>(lsp-previous-diagnostic)
-        nmap <buffer> ]g <plug>(lsp-next-diagnostic)
-        nmap <buffer> K <plug>(lsp-hover)
-        nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
-        nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
-
-        let g:lsp_format_sync_timeout = 1000
-        autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
-
-        " refer to doc to add more commands
-endfunction
-
-augroup lsp_install
-        au!
-        " call s:on_lsp_buffer_enabled only for languages that has the server registered.
-        autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-augroup END
-
 inoremap <expr> <Tab> coc#pum#visible() ? coc#pum#next(1) : "\<Tab>"
 inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
+" Use <c-space> to trigger completion
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
 
-" for NERD Tree
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window
+nnoremap <silent> K :call ShowDocumentation()<CR>
+
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+  else
+    call feedkeys('K', 'in')
+  endif
+endfunction
 nnoremap <leader>n :NERDTreeFocus<CR>
 nmap <C-n> :NERDTreeToggle<CR>
 
