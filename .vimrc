@@ -41,6 +41,7 @@ Plug 'tpope/vim-fugitive'
 " cp to system clipboard, cv to vim clipboard
 Plug 'christoomey/vim-system-copy'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'vim-airline/vim-airline'
 call plug#end()
 
 " colo seoul256
