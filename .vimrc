@@ -89,6 +89,9 @@ augroup lsp_install
         autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
 
+inoremap <expr> <Tab> coc#pum#visible() ? coc#pum#next(1) : "\<Tab>"
+inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
+
 " for NERD Tree
 nnoremap <leader>n :NERDTreeFocus<CR>
 nmap <C-n> :NERDTreeToggle<CR>
